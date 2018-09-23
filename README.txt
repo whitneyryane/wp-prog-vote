@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: (this should be a list of wordpress.org userid's)
+Contributors: whitney.ryan.e
 Donate link: http://www.ryanwhitney.us
 Tags: comments, spam
 Requires at least: 3.0.1
