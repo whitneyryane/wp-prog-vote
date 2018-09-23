@@ -1,0 +1,19 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+.visible-block {
+	 display:block;}
+.visible-row {
+	display:table-row;}
+.not-visible {
+	display:none;}
+table.thin-border {
+    border-collapse: collapse;}
+table.thin-border tr{
+    border: 1px solid #E9E9E9;}
+table.thin-border th {
+	width:30%;
+	text-align:left;}
+table.thin-border td {
+	width:70%;}
