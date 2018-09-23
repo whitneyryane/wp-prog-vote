@@ -1,21 +1,18 @@
 === Plugin Name ===
 Contributors: whitney.ryan.e
-Donate link: http://www.ryanwhitney.us
-Tags: comments, spam
-Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 4.3
+Donate link: 
+Tags: vote, voting, rank, ranking, ranked choice, ranked choice voting, rcv, single transferable, single transferable vote, stv, election, elections, poll, polling 
+Requires at least: 
+Tested up to: 
+Stable tag: 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
+Prog Vote is a wordpress plugin that allows anyone to conduct a Ranked Choice election on their website.
 
 == Description ==
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
-
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
+Prog Vote allows anyone to run a ranked choice election on their website.  Whether you want to poll the general public or elect the next officers for your organization, Prog Vote can handle it.  It has several flexible features as well.  Prog Vote will let you set the mawimum number of ranks, select the number of winners from each race within an election (multi-winner), who has permissions to vote in each election or even individual races within an election.  
 
 A few notes about the sections above:
 
