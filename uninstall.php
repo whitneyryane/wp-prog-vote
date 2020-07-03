@@ -40,8 +40,8 @@ $sql_results = "DROP TABLE IF EXISTS $table_name_results";
 
 $sql_votes = "DROP TABLE IF EXISTS $table_name_votes";
 
-$wpdb->query( $sql_results );
+$wpdb->query($sql_results);
 
-$wpdb->query( $sql_votes );
+$wpdb->query($sql_votes);
 
-delete_option( 'prog-vote' );
+delete_option('prog-vote');
