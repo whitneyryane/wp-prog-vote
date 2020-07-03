@@ -26,7 +26,7 @@ if ( !is_user_logged_in() && !get_post_meta($atts['id'], 'pv_election_ip_vote', 
 
 } else {
 
-	if ( ( $this->canVote( $atts['id'] ) || get_post_meta( $atts['id'], 'pv_election_ip_vote', true ) ) ) {
+	if ( ( $this->canVote( $atts['id'] ) || get_post_meta( $atts['id'], 'pv_election_open_vote', true ) ) ) {
 
 		if ( $interval = $this->voteTimeNotOpen( $atts['id'] ) ) {
 
@@ -52,7 +52,7 @@ if ( !is_user_logged_in() && !get_post_meta($atts['id'], 'pv_election_ip_vote', 
 
 			} else {
 
-				if ( $this->not_voted( $atts['id'] ) ) {
+				if ( $this->not_voted( $atts['id'] ) || (get_post_meta( $atts['id'],'pv_election_open_vote',true ) && !get_post_meta( $atts['id'],'pv_election_ip_vote',true )) ) {
 			
 					if ( count( $_POST ) > 0 ) {
 					
