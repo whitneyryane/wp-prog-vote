@@ -737,6 +737,8 @@ class Prog_Vote_Admin {
 		
 			$data_voter_only 	= get_post_meta( $id, 'pv_election_data_voter_only', true );
 		
+			$open_vote 			= get_post_meta( $id, 'pv_election_open_vote', true );
+			
 			$ip_vote 			= get_post_meta( $id, 'pv_election_ip_vote', true );
 		
 			$voting_open_date 	= get_post_meta( $id, 'pv_election_open_date', true );
@@ -821,6 +823,16 @@ class Prog_Vote_Admin {
 			$data_voter_only = false; 
 			
 		}			
+		
+		if ( isset( $_POST[ 'pv_election_open_vote' ] ) ) {
+			 
+			$open_vote = $_POST[ 'pv_election_open_vote' ]; 
+		
+		} else { 
+		
+			$open_vote = false; 
+			
+		}
 		
 		if ( isset( $_POST[ 'pv_election_ip_vote' ] ) ) {
 			 
@@ -929,6 +941,16 @@ class Prog_Vote_Admin {
 		} else { 
 		
 			delete_post_meta( $post, 'pv_election_data_voter_only' ); 
+			
+		}
+		
+		if ( $open_vote ) { 
+		
+			update_post_meta( $post, 'pv_election_open_vote', $open_vote ); 
+			
+		} else { 
+		
+			delete_post_meta( $post, 'pv_election_open_vote' ); 
 			
 		}
 		
