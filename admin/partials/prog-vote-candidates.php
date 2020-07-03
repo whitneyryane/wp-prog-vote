@@ -134,7 +134,7 @@ $query = new WP_Query( $args );
                 <td>
                 
                 <?php
-				if ( ! $this->voteTimeClose( get_post_meta( get_post_meta( $id, 'pv_candidate_race', true ), 'pv_race_election', true ) ) && ! $this->voteTimeNotOpen( get_post_meta( get_post_meta( $id, 'pv_candidate_race', true ), 'pv_race_election', true ) ) ) { 
+				if ( !empty( get_post_meta( $post->ID, 'price_list_category1', true ) ) && ! $this->voteTimeClose( get_post_meta( get_post_meta( $id, 'pv_candidate_race', true ), 'pv_race_election', true ) ) && ! $this->voteTimeNotOpen( get_post_meta( get_post_meta( $id, 'pv_candidate_race', true ), 'pv_race_election', true ) ) ) { 
 				
 					$assigned = get_post_meta( $id, 'pv_candidate_race', true );
 				
