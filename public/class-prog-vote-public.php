@@ -98,9 +98,9 @@ class Prog_Vote_Public {
 		
 		$election = $post['election'];
 		
-		if ( $this->canVote( $election ) || get_post_meta( $election,'pv_election_ip_vote',true ) ) { 
+		if ( $this->canVote( $election ) || get_post_meta( $election,'pv_election_open_vote',true ) ) { 
 			
-			if ( $userId = $this->not_voted( $election ) ) {
+			if ( $userId = $this->not_voted( $election ) || (get_post_meta( $election,'pv_election_open_vote',true ) && !get_post_meta( $election,'pv_election_ip_vote',true ))) {
 			
 				include_once( 'partials/assets/insert_vote.php' );
 			
