@@ -120,13 +120,15 @@ $options = get_option($this->plugin_name, array() );
                     
                     <div>
                     
-                    	<input type="checkbox" id="pv_election_ip_vote" name="pv_election_ip_vote" value="1" <?php checked( $ip_vote, true, true ); ?> />
+                    	<input type="checkbox" id="pv_election_open_vote" name="pv_election_open_vote" value="1" <?php checked( $open_vote, true, true ); ?> />
                         
                         <label for="pv_election_ip_vote">
                         
-							&nbsp;<?php _e( 'Open voting (one voter per IP Address)', $this->plugin_name ); ?>
+							&nbsp;<?php _e( 'Open voting', $this->plugin_name ); ?>
                             
                        	</label>
+                        <p> Limit open voting (1 per IP Address)? <input type="radio" id="pv_election_ip_vote_yes" name="pv_election_ip_vote" value="1" <?php checked( $ip_vote, true, true ); ?> />  Yes <input type="radio" id="pv_election_ip_vote_no" name="pv_election_ip_vote" value="0" <?php checked( $ip_vote, false, true ); ?> /> NO </p>
+
                         
                   	</div>
                 
