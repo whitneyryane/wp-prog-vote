@@ -309,6 +309,31 @@ class Prog_Vote_Public {
 		} // End check if curent date and time is after vote opens
 		
 	} // End voteTimeNotOpen function
+	
+	/**
+	* Function returns if election has not yet closed.
+	*
+	* @since    1.0.0
+	*/
+	public function voteTimeNotClose( $id ) {		
+	
+		$now = new DateTime( null, $this->get_blog_timezone() );
+		
+		if ( $now->format( 'Y-m-d H:i:s' ) > get_post_meta( $id, 'pv_election_close', true ) ) {
+	
+			return true;
+	
+		} else {
+			
+			$future_date = new DateTime( get_post_meta( $id, 'pv_election_close', true ), $this->get_blog_timezone() );
+					
+			$interval = $future_date->diff( $now );
+					
+			return $interval;
+		
+		} // End check if curent date and time is before vote closes
+	
+	} // End voteTimeClose function
 
 	
 	/**
