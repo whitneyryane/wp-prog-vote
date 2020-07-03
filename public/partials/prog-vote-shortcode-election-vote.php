@@ -430,6 +430,12 @@ if ( !is_user_logged_in() && !get_post_meta($atts['id'], 'pv_election_ip_vote', 
 					if ( get_post_meta( $atts['id'], 'pv_election_ip_vote', true ) ) {
 	
 						echo '<p>'.__( ' This election is limited to one vote per IP. If you have not voted, it is possible that someone with your same IP (uses the same wifi network for instance) has already voted.', $this->plugin_name ).'</p>';
+						
+						if ( $interval = $this->voteTimeNotClose( $atts['id'] ) ) { echo '<p>'.__( 'There is', $this->plugin_name );
+
+			echo ' <strong>'.$interval->format( '%a '.__( 'days', $this->plugin_name ).', %h '.__( 'hours', $this->plugin_name ).', %i '.__( 'minutes', $this->plugin_name ).', and %s '.__( 'seconds', $this->plugin_name ) ).'</strong> ';
+
+			echo __( 'until voting ends.', $this->plugin_name ).' After it ends the votes can be tabulated by the administrator and the results will become available at this link. Please stand by.</p>';}
 	
 					} // End check if voting is via IP Address.
 
