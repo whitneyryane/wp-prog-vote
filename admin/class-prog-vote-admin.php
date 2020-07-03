@@ -269,7 +269,7 @@ class Prog_Vote_Admin {
 	
 		$settings_link = array(
 	
-			'<a href="'.admin_url( 'admin.php?page='.$this->plugin_name ).'">'.__( 'Settings', $this->plugin_name ).'</a>',
+			'<a href="'.admin_url( 'admin.php?page=prog_vote_settings' ).'">'.__( 'Settings', $this->plugin_name ).'</a>',
 	
 		);
 		
