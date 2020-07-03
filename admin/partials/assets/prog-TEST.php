@@ -1,178 +1,4 @@
 <?php
-/**
-*  runs the rounds of tabulation.
-*
-*
-* @since    1.0.0
-*/
-function next_tab_round( $r ) {
-	
-	/* $r = array(
-		'id'	// race id.
-		'i' 	// round iteration.
-		'va' 	// array of comma separated votes and counts
-		'ec' 	// eliminated candidates array.
-		'pc' 	// pending candidate array.
-		'wc' 	// winning candidate array.
-		'tr'	// array tracking results.
-		'rd' 	// array of redistribution.
-		'tl' 	// total number of votes.
-		'c' 	// all candidates for this race.
-		'mw' 	// if race is multi winner.
-		'wc' 	// number of winners.
-		'th' 	// the threshold for winning.
-		'mr' 	// maximum number of ranks for a race.
-	); */
-
-	$c = $r['va'];
-
-	$ca = array();
-
-	if ( count ( $r['ec'] ) ) {
-		
-		$k  = explode( ',' , $c );
-		
-		if ( in_array( $k[0], $r['pc'] ) ) {
-		
-		}
-		
-	} else {
-		
-	} // end if any candidates have been eliminated.
-	
-	foreach ( $r['c'] as $c ) {
-				
-		$cid = $c->post_id;
-		
-		if ( in_array ( $cid , $r['e'] ) || in_array ( $cid.'e' , $r['e'] ) ) { } else {
-			
-			$ec = count( $r['e'] );
-			
-			if ( $ec > ( $r['mr'] - 1 ) ) { $ec = ( $r['mr'] - 1 ); }
-			
-			$query = 'SELECT id 
-			FROM '.$wpdb->prefix.'pv_votes 
-			WHERE race = '.$r['id'].'
-			AND (';
-			
-			for ( $j = ( $ec + 1 ); $j > 0; $j-- ) {
-
-				if ( $j > 1 ) { $query .= '('; }
-	
-				$query .= 'rank'.( $j ).' = '.$cid;
-	
-				if ( $j > 1 ) { $query .= ' AND '; }	
-
-				for ( $k = $j - 1; $k > 0; $k-- ) {
-	
-					$query .= '(';
-					
-					$m = 0;
-
-					for ( $l = ( count( $r['e'] ) - 1); $l >= 0; $l-- ) {
-	
-						if ( $k == ( $j - 1)) {
-							
-							if ( substr( $r['e'][$l], -1 ) == 'e' ) {
-						
-								if ( $m ) { $query .= ' OR '; }
-						
-								$query .= 'rank'.( $k ).' = '.$r['e'][$l];
-							
-								$m++;
-							}
-						
-						} else {
-							
-							$query .= 'rank'.( $k ).' = '.$r['e'][$l];
-		
-							if ( $l > 0 && $k != ( $j - 1)) { $query .= ' OR '; }
-							
-						}
-						
-					} // end for running through each eliminated candidate.
-
-					$query .= ')';
-
-					if ( $k > 1 ) { $query .= ' AND '; }
-
-				} // end for itterating through ranks as $k.
-
-				if ( $j > 1 ) { $query .= ')'; }
-
-				if ( $j > 1 ) { $query .= ' OR '; }	
-
-			} // for $j > 0.
-
-			$query .= ')';
-		
-			$vc = $wpdb->query( $query );
-			
-			$r['temp'][$cid] = $vc;
-		
-		} // end if candidate has been eliminated skip else form query.	
-		
-		$ca[$cid] = $vc;	
-		
-	} // end foreach candidate as $c.
-	
-	if ( count( $r['ta'] ) > 0 ) {
-	
-		foreach ( $ca as $k => $v ) {
-			
-			$r['ta'][$k] = $v;
-			
-		}
-
-	} else {
-	
-		foreach ( $r['ta'] as $k => $v ) {
-			
-			if( isset( $ca[$k] ) ) {
-			
-				$r['ta'][$k] += $ca[$k];
-				
-			} else { unset( $r['ta'][$k] ); }
-			
-		}
-	
-	}
-	
-	$r['tl'] = array_sum( $r['ta'] );
-	
-	arsort( $r['ta'] );
-	
-	foreach ( $r['ta'] as $k => $v ) {
-			
-		if ( ( ( $v / $r['tl'] ) * 100 ) > $r['th'] ) {
-			
-			$r = $this->redistribute( $k , $r );	
-			
-		}
-	
-	}
-	
-	// FROM there down.
-		
-	if ( count( $r['e'] ) < ( count( $r['c'] ) - 1 ) ) {
-			
-		return $r;
-	
-	} else {
-	
-		return false;
-		
-	} // end if all but one candidate has been eliminated.
-	
-} // end next_tab_round function.
-
-
-/**
-*  function intitiates tabulation and sets variables.
-*
-*
-* @since    1.0.0
-*/
 function tab_election(){
 	$args = array(
 		
@@ -273,24 +99,16 @@ function tab_election(){
 				'pc'	=> 	array(), // pending cadidates array.
 		
 				'wc'	=> 	array(), // winning candidates array.
-				
-				'tr'	=> 	array(),// array tracking results.
 		
-				'rd'	=>	array() // array of redistribution.
+				'rd'	=>	array(), // array of redistribution.
 		
 			);
-			
-			// getting candidates object array.
-			$ra['c'] 	= 	$this->get_candidates( $ra['id'] );
-			
-			foreach ( $r['c'] as $c ) {
-			
-				array_push( $ra['pc'], $c->post_id );	
-			
-			}
 	
 			// total number of votes.			
 			$ra['tl']	=	array_sum ( $ra['va'] );
+	
+			// getting candidates object array.
+			$ra['c'] 	= 	$this->get_candidates( $ra['id'] );
 		
 			// determining if the race is multi-winner.
 			$ra['mw']	= 	get_post_meta( $ra['id'], 'pv_race_multi_winner', true );
@@ -482,19 +300,18 @@ function redistribute( $id , $r ) {
 	
 	/*
 	$r = array(
-		'id' 	// race id.
-		'i' 	// round iteration.
-		'va' 	// array of comma separated votes and counts
-		'ec' 	// eliminated candidates array.
-		'pc' 	// pending candidate array.
-		'wc' 	// winning candidate array
-		'rd' 	// array of redistribution.
-		'tl' 	// total number of votes.
-		'c' 	// all candidates for this race.
-		'mw' 	// if race is multi winner.
-		'wc' 	// number of winners.
-		'th' 	// the threshold for winning.
-		'mr' 	// maximum number of ranks for a race.
+	'id' // race id.
+	'i' // round iteration.
+	'ec' // eliminated candidates array.
+	'pc' // pending candidate array.
+	'wc' // winning candidate array
+	'rd' // array of redistribution.
+	'tl' // total number of votes.
+	'c' // all candidates for this race.
+	'mw' // if race is multi winner.
+	'wc' // number of winners.
+	'th' // the threshold for winning.
+	'mr' // maximum number of ranks for a race.
 	);
 	*/
 	
@@ -552,6 +369,159 @@ function redistribute( $id , $r ) {
 
 	return $r;
 	
-} // end redistribute function.
+}
+/**
+*  runs the rounds of tabulation.
+*
+*
+* @since    1.0.0
+*/
+function next_tab_round( $r ) {
+	
+	/* $r = array(
+		'id' // race id.
+		'i' // round iteration.
+		'ec' // eliminated candidates array.
+		'pc' // pending candidate array.
+		'wc' // winning candidate array.
+		'rd' // array of redistribution.
+		'tl' // total number of votes.
+		'c' // all candidates for this race.
+		'mw' // if race is multi winner.
+		'wc' // number of winners.
+		'th' // the threshold for winning.
+		'mr' // maximum number of ranks for a race.
+	); */
+
+	$ca = array();
+	
+	$r['temp'] = array();
+	
+	foreach ( $r['c'] as $c ) {
+				
+		$cid = $c->post_id;
+		
+		if ( in_array ( $cid , $r['e'] ) || in_array ( $cid.'e' , $r['e'] ) ) { } else {
+			
+			$ec = count( $r['e'] );
+			
+			if ( $ec > ( $r['mr'] - 1 ) ) { $ec = ( $r['mr'] - 1 ); }
+			
+			$query = 'SELECT id 
+			FROM '.$wpdb->prefix.'pv_votes 
+			WHERE race = '.$r['id'].'
+			AND (';
+			
+			for ( $j = ( $ec + 1 ); $j > 0; $j-- ) {
+
+				if ( $j > 1 ) { $query .= '('; }
+	
+				$query .= 'rank'.( $j ).' = '.$cid;
+	
+				if ( $j > 1 ) { $query .= ' AND '; }	
+
+				for ( $k = $j - 1; $k > 0; $k-- ) {
+	
+					$query .= '(';
+					
+					$m = 0;
+
+					for ( $l = ( count( $r['e'] ) - 1); $l >= 0; $l-- ) {
+	
+						if ( $k == ( $j - 1)) {
+							
+							if ( substr( $r['e'][$l], -1 ) == 'e' ) {
+						
+								if ( $m ) { $query .= ' OR '; }
+						
+								$query .= 'rank'.( $k ).' = '.$r['e'][$l];
+							
+								$m++;
+							}
+						
+						} else {
+							
+							$query .= 'rank'.( $k ).' = '.$r['e'][$l];
+		
+							if ( $l > 0 && $k != ( $j - 1)) { $query .= ' OR '; }
+							
+						}
+						
+					} // end for running through each eliminated candidate.
+
+					$query .= ')';
+
+					if ( $k > 1 ) { $query .= ' AND '; }
+
+				} // end for itterating through ranks as $k.
+
+				if ( $j > 1 ) { $query .= ')'; }
+
+				if ( $j > 1 ) { $query .= ' OR '; }	
+
+			} // for $j > 0.
+
+			$query .= ')';
+		
+			$vc = $wpdb->query( $query );
+			
+			$r['temp'][$cid] = $vc;
+		
+		} // end if candidate has been eliminated skip else form query.	
+		
+		$ca[$cid] = $vc;	
+		
+	} // end foreach candidate as $c.
+	
+	if ( count( $r['ta'] ) > 0 ) {
+	
+		foreach ( $ca as $k => $v ) {
+			
+			$r['ta'][$k] = $v;
+			
+		}
+
+	} else {
+	
+		foreach ( $r['ta'] as $k => $v ) {
+			
+			if( isset( $ca[$k] ) ) {
+			
+				$r['ta'][$k] += $ca[$k];
+				
+			} else { unset( $r['ta'][$k] ); }
+			
+		}
+	
+	}
+	
+	$r['tl'] = array_sum( $r['ta'] );
+	
+	arsort( $r['ta'] );
+	
+	foreach ( $r['ta'] as $k => $v ) {
+			
+		if ( ( ( $v / $r['tl'] ) * 100 ) > $r['th'] ) {
+			
+			$r = $this->redistribute( $k , $r );	
+			
+		}
+	
+	}
+	
+	// FROM there down.
+		
+	if ( count( $r['e'] ) < ( count( $r['c'] ) - 1 ) ) {
+			
+		return $r;
+	
+	} else {
+	
+		return false;
+		
+	} // end if all but one candidate has been eliminated.
+	
+} // end next_tab_round function.
+
 
 ?>
